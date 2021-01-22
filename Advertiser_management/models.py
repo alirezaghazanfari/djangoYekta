@@ -1,38 +1,56 @@
 from django.db import models
 
 # Create your models here.
-class BaseAdvertiser(models.Model):
-    def __init__(self,views=0,clicks=0):
-        self.views = views
-        self.clicks = clicks
+
+
+
+
+
+
+
+class Advertiser(models.Model):
+    Advertiser_name = models.CharField(max_length=200 ,default="")
+    Advertiser_id = models.IntegerField(primary_key=True , default=0)
+    clicks = 0
+    views = 0
+    def __str__(self):
+        return self.Advertiser_name
+    totalClciks = 0
+    def getName(self):
+        return self.name
+    def setName(self,newName):
+        self.name = newName
+    @staticmethod
+    def help():
+        message = "this is help message"
+        return message
+
     def describeMe(self):
-        description = "this class is father of Ad and Advertiser classes. I am BaseAdvertising Class"
+        description = "this class is advertiser"
         return description
 
-    def getClicks(self):
-        return self.clicks
-
-    def getViews(self):
-        return self.views
-
     def incClicks(self):
-        self.clicks = self.clicks + 1
+        self.clicks +=1
+        Advertiser.totalClciks+=1
 
-    def incViews(self):
-        self.views = self.views + 1
+    @staticmethod
+    def getTotalClicks():
+        return Advertiser.totalClciks
 
 
 
 
+class Ad(models.Model):
+    views = 0
+    clicks = 0
+    title = models.CharField(max_length=200)
+    link = models.CharField(max_length=200)
+    img_url = models.CharField(max_length=200)
+    advertiser_id = models.ForeignKey(Advertiser,on_delete=models.CASCADE)
+    def __str__(self):
+        return self.title
 
-class Ad(BaseAdvertiser,models.Model):
-    def __init__(self, id, title, img_url, link, advertiser,views = 0,clicks = 0):
-        super().__init__(views,clicks)
-        self.id = id
-        self.title = title
-        self.img_url = img_url
-        self.link = link
-        self.advertiser = advertiser
+
 
 
     def get_title(self):
@@ -57,7 +75,7 @@ class Ad(BaseAdvertiser,models.Model):
         return self.advertiser
 
     def set_advertiser(self, new_advertiser):
-        self.advertiser = new_advertiser
+        self.advertiser_id = new_advertiser
 
     def incClicks(self):
         super().incClicks()
@@ -70,37 +88,4 @@ class Ad(BaseAdvertiser,models.Model):
     def describeMe(self):
         message = "this is class Ad"
         return message
-
-
-
-class Advertiser(BaseAdvertiser,models.Model):
-    def __init__(self,id,name,views = 0 , clicks = 0):
-        super().__init__(views,clicks)
-        self.id = id
-        self.name = name
-    totalClciks = 0
-    def getName(self):
-        return self.name
-    def setName(self,newName):
-        self.name = newName
-    @staticmethod
-    def help():
-        message = "this is help message"
-        return message
-
-    def describeMe(self):
-        description = "this class is advertiser"
-        return description
-
-    def incClicks(self):
-        super().incClicks()
-        Advertiser.totalClciks+=1
-
-    @staticmethod
-    def getTotalClicks():
-        return Advertiser.totalClciks
-
-
-
-
 

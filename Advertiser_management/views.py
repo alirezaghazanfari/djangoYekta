@@ -11,4 +11,4 @@ def guide_user_after_clcick(request):
     pass
 
 def make_ad(request):
-    pass
+    return render(request,'../templates/Advertiser_management/makingAd.html',{})
