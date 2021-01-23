@@ -7,16 +7,10 @@
 </head>
 <body>
 <h1> make your ad </h1>
-<form action= "{% url  "../../views.py:handleCreationAd" %}" method="post"  >
-    <label for="title">enter name: </label>
-    <input id="title" type="text"  value=""><br>
-    <label for="advertiser_id">enter your id : </label>
-    <input id="advertiser_id" type="text" value=""><br>
-    <label for="img">image : </label>
-    <input id="img_url" type="text" value=""><br>
-    <label for="url">url : </label>
-    <input type="text" value="" id="url"><br>
-    <input type="submit" value="submit">
+<form action="getPost/" method="post"  >
+   {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="submit" >
 </form>
 </body>
 </html>

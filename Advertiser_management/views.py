@@ -1,15 +1,15 @@
-from django.shortcuts import render
-from django.shortcuts import get_object_or_404
-from .models import Ad,Advertiser
-from django.shortcuts import render
-from django.forms import Form
-from django.http import HttpResponseRedirect,Http404,HttpResponse
-from django.http import Http404
-from django.shortcuts import get_object_or_404
+from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+
+from .models import Ad
+from django.shortcuts import get_object_or_404
 from django.shortcuts import render
-from django.http import HttpResponse,HttpResponseRedirect
-from django.template import  loader
+from django.views import View
+from .forms import data_form
+
+from .models import Ad
+
+
 # Create your views here.
 def show_ad(request):
     listOfAds = Ad.objects.order_by('advertiser_id')
@@ -25,9 +25,17 @@ def guide_user_after_click(request,ad_id):
    return HttpResponseRedirect(ad.get_link())
 
 def make_ad(request):
-    return render(request, 'Advertiser_management/makingAd.html', {})
+    if request.method == 'POST':
+        form = data_form(request.POST)
+        if form.is_valid():
+            return HttpResponseRedirect(reverse('ads'))
+    else:
+        form = data_form()
+    return render(request, 'Advertiser_management/makingAd.html', {'form':form})
 
 
 def handleCreationAd(request):
     title = request.POST['title']
     print(title)
+
+
