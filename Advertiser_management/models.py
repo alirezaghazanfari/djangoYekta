@@ -46,7 +46,7 @@ class Ad(models.Model):
     title = models.CharField(max_length=200)
     link = models.CharField(max_length=200)
     img_url = models.CharField(max_length=200)
-    advertiser_id = models.ForeignKey(Advertiser,on_delete=models.CASCADE)
+    advertiser = models.ForeignKey(Advertiser,on_delete=models.CASCADE)
     def __str__(self):
         return self.title
 
@@ -75,7 +75,7 @@ class Ad(models.Model):
         return self.advertiser
 
     def set_advertiser(self, new_advertiser):
-        self.advertiser_id = new_advertiser
+        self.advertiser = new_advertiser
 
     def incClicks(self):
         super().incClicks()

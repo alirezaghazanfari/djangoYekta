@@ -32,9 +32,11 @@ def make_ad(request):
     if request.method == 'POST':
         form = data_form(request.POST)
         if form.is_valid():
-            ad = Ad(title=form.title , link=form.link , img_url= form.img_url , advertiser_id= form.advertiser_id)
+            advertiser_find = form.cleaned_data.get('advertiser')
+            advertiser = Advertiser.objects.get(Advertiser_id=advertiser_find)
+            ad = Ad(title=form.cleaned_data.get('title') , link=form.cleaned_data.get('link') , img_url= form.cleaned_data.get('img_url') , advertiser= advertiser)
             ad.save()
-            return HttpResponseRedirect(reverse('ads'))
+            return HttpResponseRedirect('/ads/show/')
     else:
         form = data_form()
     return render(request, 'Advertiser_management/makingAd.html', {'form':form})
