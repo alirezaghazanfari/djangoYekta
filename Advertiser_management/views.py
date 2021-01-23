@@ -28,6 +28,8 @@ def make_ad(request):
     if request.method == 'POST':
         form = data_form(request.POST)
         if form.is_valid():
+            ad = Ad(title=form.title , link=form.link , img_url= form.img_url , advertiser_id= form.advertiser_id)
+            ad.save()
             return HttpResponseRedirect(reverse('ads'))
     else:
         form = data_form()
