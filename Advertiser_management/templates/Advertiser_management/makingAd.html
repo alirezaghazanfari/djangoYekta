@@ -7,7 +7,7 @@
 </head>
 <body>
 <h1> make your ad </h1>
-<form action="/form/" method="post"  >
+<form action= "{% url  "../../views.py:handleCreationAd" %}" method="post"  >
     <label for="title">enter name: </label>
     <input id="title" type="text"  value=""><br>
     <label for="advertiser_id">enter your id : </label>
