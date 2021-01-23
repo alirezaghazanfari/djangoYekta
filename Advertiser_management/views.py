@@ -7,15 +7,19 @@ from django.shortcuts import render
 from django.views import View
 from .forms import data_form
 
-from .models import Ad
+from .models import Ad,Advertiser
 
 
 # Create your views here.
 def show_ad(request):
-    listOfAds = Ad.objects.order_by('advertiser_id')
-    return render(request, 'Advertiser_management/ads.html', {
-        'Ads': listOfAds,
-    })
+    if request.method == 'POST':
+       pass
+    else:
+        pass
+        #list_advertisers = Advertiser.objects.order_by(pk = )
+        #return render(request, 'Advertiser_management/ads.html', {
+         #    'Ads': listOfAds,
+          #  })
 
 def guide_user_after_click(request,ad_id):
    ad = get_object_or_404(Ad,pk = ad_id)
