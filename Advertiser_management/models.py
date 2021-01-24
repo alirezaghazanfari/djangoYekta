@@ -9,12 +9,13 @@ from django.db import models
 
 
 class Advertiser(models.Model):
-    Advertiser_name = models.CharField(max_length=200 ,default="")
-    Advertiser_id = models.IntegerField(primary_key=True , default=0)
+    name = models.CharField(max_length=200 ,default="")
+    advertiser_id = models.IntegerField(primary_key=True , default=0)
     clicks = 0
     views = 0
+    ads=[]
     def __str__(self):
-        return self.Advertiser_name
+        return self.name
     totalClciks = 0
     def getName(self):
         return self.name
@@ -45,7 +46,7 @@ class Ad(models.Model):
     clicks = 0
     title = models.CharField(max_length=200)
     link = models.CharField(max_length=200)
-    img_url = models.CharField(max_length=200)
+    image = models.URLField(max_length=200)
     advertiser = models.ForeignKey(Advertiser,on_delete=models.CASCADE)
     def __str__(self):
         return self.title
@@ -59,11 +60,11 @@ class Ad(models.Model):
     def set_title(self, new_title):
         self.title = new_title
 
-    def get_img_url(self):
-        return self.img_url
+    def get_image(self):
+        return self.image
 
-    def set_img_url(self, new_url):
-        self.img_url = new_url
+    def set_image(self, new_img):
+        self.image = new_img
 
     def get_link(self):
         return self.link
