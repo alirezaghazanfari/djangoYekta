@@ -5,18 +5,23 @@ from django.utils import timezone
 from ipware import get_client_ip
 from .forms import data_form
 from .models import Ad, Advertiser
+from django.views.generic.base import TemplateView
+
 
 
 # Create your views here.
-def show_ad(request):
+class ShowAdPage(TemplateView):
+    template_name = 'Advertiser_management/ads.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         list_advertisers = list(Advertiser.objects.all())
         if len(list_advertisers) == 0:
             raise Http404('list of advertisers is empty')
         for advertiser1 in list_advertisers:
             advertiser1.ads = list(Ad.objects.filter(advertiser=advertiser1))
-        return render(request, 'Advertiser_management/ads.html', {
-             'advertisers': list_advertisers,
-            })
+        context['advertisers'] = list_advertisers
+        return context
+
 
 def guide_user_after_click(request,ad_id):
         ad = get_object_or_404(Ad,pk = ad_id)
