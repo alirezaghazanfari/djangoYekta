@@ -4,8 +4,7 @@ from django.db import models
 class Advertiser(models.Model):
     name = models.CharField(max_length=200 ,default="")
     advertiser_id = models.IntegerField(primary_key=True , default=0)
-    clicks = 0
-    views = 0
+
     ads=[]
     def __str__(self):
         return self.name
@@ -23,10 +22,6 @@ class Advertiser(models.Model):
         description = "this class is advertiser"
         return description
 
-    def inc_clicks(self):
-        self.clicks +=1
-        Advertiser.totalClciks+=1
-
     @staticmethod
     def get_total_clicks():
         return Advertiser.totalClciks
@@ -35,21 +30,24 @@ class Advertiser(models.Model):
 
 
 class Ad(models.Model):
-    views = 0
-    clicks = 0
     title = models.CharField(max_length=200)
     link = models.CharField(max_length=200)
     image = models.URLField(max_length=200)
     advertiser = models.ForeignKey(Advertiser,on_delete=models.CASCADE)
+    approve = models.BooleanField(default=False )
     def __str__(self):
         return self.title
-
-
-
-
     def get_title(self):
         return self.title
+    def approve_ad(self):
+        self.approve = True
+        self.save()
+    def get_approve(self):
+        return self.approve
+    def set_approve(self,new_approve):
+        self.approve = new_approve
 
+        
     def set_title(self, new_title):
         self.title = new_title
 
@@ -71,14 +69,26 @@ class Ad(models.Model):
     def set_advertiser(self, new_advertiser):
         self.advertiser = new_advertiser
 
-    def inc_clicks(self):
-        self.clicks+=1
-        self.advertiser.inc_clicks()
+    def inc_clicks(self,time,user):
+        click = Click(ad_id= self.id , time= time , user_id= user)
 
-    def inc_views(self):
-        self.views+=1
+    def inc_views(self,time,user):
+        view = View(ad_id=self.id , time= time , user_id=user)
+        view.save()
 
     def describe_me(self):
         message = "this is class Ad"
         return message
+
+
+class Click(models.Model):
+    ad_id = models.IntegerField()
+    time = models.TimeField()
+    user_id = models.CharField(max_length=200)
+
+class View(models.Model):
+    ad_id = models.IntegerField()
+    time = models.TimeField()
+    user_id = models.CharField(max_length=200)
+
 

@@ -1,13 +1,10 @@
-from django.http import HttpResponse, HttpResponseRedirect,Http404
-from django.urls import reverse
-
-from .models import Ad
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
-from django.views import View
+from django.utils import timezone
+from ipware import get_client_ip
 from .forms import data_form
-
-from .models import Ad,Advertiser
+from .models import Ad, Advertiser
 
 
 # Create your views here.
@@ -23,8 +20,14 @@ def show_ad(request):
 
 def guide_user_after_click(request,ad_id):
         ad = get_object_or_404(Ad,pk = ad_id)
-        ad.inc_clicks()
-        ad.inc_views()
+        user_id_str = request.META.get('HTTP_X_FORWARDED_FOR')
+        ip = ''
+        if user_id_str:
+            ip = user_id_str.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        ad.inc_clicks(time=timezone.now(),user=ip)
+        ad.inc_views(time=timezone.now(),user=ip)
         ad.save()
         return HttpResponseRedirect(ad.get_link())
 
