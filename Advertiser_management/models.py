@@ -70,10 +70,11 @@ class Ad(models.Model):
         self.advertiser = new_advertiser
 
     def inc_clicks(self,time,user):
-        click = Click(ad_id= self.id , time= time , user_id= user)
+        click = Click(ad= self , time= time , user_id= user)
+        click.save()
 
     def inc_views(self,time,user):
-        view = View(ad_id=self.id , time= time , user_id=user)
+        view = View(ad=self , time= time , user_id=user)
         view.save()
 
     def describe_me(self):
@@ -82,12 +83,12 @@ class Ad(models.Model):
 
 
 class Click(models.Model):
-    ad_id = models.IntegerField()
+    ad = models.ForeignKey(Ad,on_delete=models.CASCADE,default=None)
     time = models.TimeField()
     user_id = models.CharField(max_length=200)
 
 class View(models.Model):
-    ad_id = models.IntegerField()
+    ad = models.ForeignKey(Ad,on_delete=models.CASCADE,default=None)
     time = models.TimeField()
     user_id = models.CharField(max_length=200)
 

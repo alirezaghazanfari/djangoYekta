@@ -3,9 +3,12 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.views.generic.base import TemplateView, RedirectView
 from django.views.generic.edit import FormView
-
+from django.views.generic.detail import DetailView
+from django.db.models import QuerySet
 from .forms import data_form
 from .models import Ad, Advertiser
+from datetime import time as time_making
+
 
 
 # Create your views here.
@@ -52,6 +55,12 @@ class MAkingAdPage(FormView):
             raise Http404('the error is in finding advertiser')
 
 
+def show_details(request):
+    for e in Ad.objects.all():
+        print(e.title)
+    list_of_ordered_by_time = list(Ad.objects.dates('hour'))
+    for i in list_of_ordered_by_time:
+        print(i)
 
 
 
