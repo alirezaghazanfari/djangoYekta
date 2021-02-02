@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          crossorigin="anonymous">
+    <title>Ad Detail</title>
+</head>
+<body>
+<div class="container" dir="rtl">
+    <table>
+        {% for key, value in result.items %}
+        <tr>
+        <th>{{ key }}</th>
+        <td>
+             {% for key2,value2 in value.items %}
+                <tr>
+                    <td>{{ key2 }}</td>
+                    <td>{{ value2 }}</td>
+                </tr>
+            {% endfor %}
+        </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+</body>
+</html>

@@ -7,7 +7,8 @@ class AdAdmin(admin.ModelAdmin):
      readonly_fields =  ('title','link','image','advertiser',)
      list_display = ('title','advertiser','approve')
      list_filter = ('approve',)
-     search_fields = ['title__exact',]
+     search_fields = ['title','advertiser__name',]
+     list_editable =('approve',)
 
 admin.site.register(Ad,AdAdmin)
 

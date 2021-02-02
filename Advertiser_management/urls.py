@@ -7,5 +7,5 @@ urlpatterns = [
     path('create/',views.MAkingAdPage.as_view(),name='creation'),
     path('create/getPost/',views.MAkingAdPage.as_view(),name = 'creation'),
     path('click/<int:ad_id>/',views.GuideAfterClick.as_view(),name = 'ads link page'),
-    path('detail/',views.show_details,name = 'details'),
+    path('detail/',views.ShowDetails.as_view(),name = 'details'),
 ]
