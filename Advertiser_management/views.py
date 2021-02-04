@@ -4,11 +4,12 @@ from django.utils import timezone
 from django.views.generic.base import TemplateView, RedirectView
 from django.views.generic.edit import FormView
 from django.views.generic.detail import DetailView
-from django.db.models import QuerySet,Count
+from django.db.models import QuerySet,Count,Avg
 from .forms import data_form
 from .models import Ad, Advertiser,Click,View
 from datetime import time as time_making
-
+from sortedcontainers import SortedDict
+from datetime import datetime,date,timedelta
 
 
 # Create your views here.
@@ -84,16 +85,45 @@ class ShowDetails(TemplateView):
                 hour_and_clicks[str(time_hour)] = str(number)
             result[ad_element] = hour_and_clicks
         context['result'] = result
-        list_of_ad_reverse = Ad.objects.order_by('view__time').reverse().distinct('title','link')
-        for a in list_of_ad_reverse:
-            number_of_clicks =  Click.objects.filter(ad=a).annotate(Count())
-        list_of_views = Ad.objects.order_by('title')
-        for element in list_of_views:
-            View.objects.filter(ad=element)
-            Click.objects.filter(ad=element)
 
+        list_of_ad_for_report_2 = Ad.objects.all()
+        dictionary_of_ad_rate = {}
+        for ad_element in list_of_ad_for_report_2:
+            number_of_clicks = Click.objects.filter(ad = ad_element).count()
+            number_of_views = View.objects.filter(ad = ad_element).count()
+            rate = number_of_clicks/number_of_views
+            dictionary_of_ad_rate[ad_element] = rate
+        sorted_list = invertDictionary(SortedDict(dictionary_of_ad_rate))
+        context['result2'] = sorted_list
+
+
+        user_id_dict =(Click.objects.values('user_id')).distinct()
+        result_3 = {}
+        for user_ip in user_id_dict:
+            list_1 =   View.objects.filter(user_id = user_ip['user_id'])
+            average = 0
+            for view_time in list_1:
+              time_click = Click.objects.filter(user_id = user_ip['user_id'],ad = view_time.ad).value_list('time')
+              time_view = list_1.value_list('time')
+              l =0
+              for i in time_view:
+                  try:
+
+                    diff = i - time_click[l]
+                    average+=diff.seconds
+                  except:
+                      break
+            number_2 =   View.objects.filter(user_id = user_ip['user_id']).count()
+            average = average/number_2
+            result_3[user_ip] = average
+
+        context['result3'] = result_3
         return context
 
 
-
-
+def invertDictionary(d):
+     myDict = {}
+     for i in d:
+       value = d.get(i)
+       myDict.setdefault(value,[]).append(i)
+     return myDict
