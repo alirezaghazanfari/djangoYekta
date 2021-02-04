@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'Advertiser_management.apps.AdvertiserManagementConfig'
+    'Advertiser_management.apps.AdvertiserManagementConfig',
+    'rest_framework',
 
 ]
 

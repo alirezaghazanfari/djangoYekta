@@ -1,11 +1,10 @@
 from django.db import models
+from django_rest import serializers
 
 # Create your models here.
 class Advertiser(models.Model):
     name = models.CharField(max_length=200 ,default="")
     advertiser_id = models.IntegerField(primary_key=True , default=0)
-
-    ads=[]
     def __str__(self):
         return self.name
     totalClciks = 0
@@ -17,14 +16,13 @@ class Advertiser(models.Model):
     def help():
         message = "this is help message"
         return message
-
     def describe_me(self):
         description = "this class is advertiser"
         return description
-
     @staticmethod
     def get_total_clicks():
         return Advertiser.totalClciks
+
 
 
 
@@ -83,12 +81,12 @@ class Ad(models.Model):
 
 
 class Click(models.Model):
-    ad = models.ForeignKey(Ad,on_delete=models.CASCADE,default=None)
+    ad = models.ForeignKey(Ad,related_name='click_ad',on_delete=models.CASCADE,default=None)
     time = models.TimeField()
     user_id = models.CharField(max_length=200)
 
 class View(models.Model):
-    ad = models.ForeignKey(Ad,on_delete=models.CASCADE,default=None)
+    ad = models.ForeignKey(Ad,related_name='view_ad',on_delete=models.CASCADE,default=None)
     time = models.TimeField()
     user_id = models.CharField(max_length=200)
 
