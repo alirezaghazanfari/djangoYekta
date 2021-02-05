@@ -1,12 +1,20 @@
 from rest_framework import serializers
+
 from .models import Advertiser,Ad,Click,View
+import json
 
 class AdvertiserSerializer(serializers.ModelSerializer):
+    ads = serializers.SerializerMethodField()
+    def get_ads(self,advertiser):
+        return (Ad.objects.filter(advertiser = advertiser).values('title'))
     class Meta:
         model = Advertiser
-        fields = '__all__'
+        fields = ('name','ads')
+
     def create(self, validated_data):
         advertiser = Advertiser(name=validated_data['name'],advertiser_id=validated_data['advertiser_id'])
+        self.ads = self.get_ads(advertiser)
+        advertiser.ad_set(validated_data['ads'])
         advertiser.save()
         return advertiser
 class AdSerializer(serializers.ModelSerializer):

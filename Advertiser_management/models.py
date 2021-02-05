@@ -1,5 +1,5 @@
 from django.db import models
-from django_rest import serializers
+import json
 
 # Create your models here.
 class Advertiser(models.Model):

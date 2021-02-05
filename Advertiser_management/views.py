@@ -1,15 +1,36 @@
+from datetime import timedelta
+
 from django.db.models import Count
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.views.generic.base import TemplateView, RedirectView
 from django.views.generic.edit import FormView
-from datetime import datetime,timedelta
+from rest_framework.generics import ListCreateAPIView
+
 from .forms import data_form
 from .models import Ad, Advertiser, Click, View
+from .serializers import AdvertiserSerializer
 
 
 # Create your views here.
+class ShowAdPageAPI(ListCreateAPIView):
+
+    queryset = Advertiser.objects.all()
+    serializer_class = AdvertiserSerializer
+    def list(self, request, *args, **kwargs):
+        user_id_str = self.request.META.get('HTTP_X_FORWARDED_FOR')
+        ip = ''
+        list_of_ads = Ad.objects.all()
+        if user_id_str:
+            ip = user_id_str.split(',')[0]
+        else:
+            ip = self.request.META.get('REMOTE_ADDR')
+        for i in list_of_ads:
+            i.inc_views(time=timezone.now(), user=ip)
+            i.save()
+        return super().list(request,*args,**kwargs)
+
 class ShowAdPage(TemplateView):
     template_name = 'Advertiser_management/ads.html'
     def get_context_data(self, **kwargs):
@@ -30,7 +51,6 @@ class ShowAdPage(TemplateView):
         for i in list_of_ads:
             i.inc_views(time=timezone.now(), user=ip)
             i.save()
-
         return context
 
 class GuideAfterClick(RedirectView):
@@ -123,6 +143,7 @@ class ShowDetails(TemplateView):
 
         context['result3'] = result_3
         return context
+
 
 
 def invertDictionary(d):
