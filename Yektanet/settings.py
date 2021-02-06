@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Advertiser_management.apps.AdvertiserManagementConfig',
 
+
 ]
 
 
@@ -55,6 +56,9 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'Yektanet.urls'
+
+CELERY_BROKER_URL = 'amqp://guest:**@127.0.0.1:5672//'
+
 
 TEMPLATES = [
     {

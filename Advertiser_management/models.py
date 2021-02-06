@@ -1,10 +1,11 @@
 from django.db import models
-import json
+
 
 # Create your models here.
 class Advertiser(models.Model):
     name = models.CharField(max_length=200 ,default="")
     advertiser_id = models.IntegerField(primary_key=True , default=0)
+    ads = []
     def __str__(self):
         return self.name
     totalClciks = 0

@@ -1,5 +1,5 @@
 from datetime import timedelta
-
+import json
 from django.db.models import Count
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
@@ -7,10 +7,14 @@ from django.utils import timezone
 from django.views.generic.base import TemplateView, RedirectView
 from django.views.generic.edit import FormView
 from rest_framework.generics import ListCreateAPIView
+from rest_framework.viewsets import ViewSet
+from rest_framework.views import APIView
+from rest_framework.renderers import TemplateHTMLRenderer
+
 
 from .forms import data_form
 from .models import Ad, Advertiser, Click, View
-from .serializers import AdvertiserSerializer
+from .serializers import AdvertiserSerializer,ViewSerializer,AdSerializer
 
 
 # Create your views here.
@@ -26,9 +30,13 @@ class ShowAdPageAPI(ListCreateAPIView):
             ip = user_id_str.split(',')[0]
         else:
             ip = self.request.META.get('REMOTE_ADDR')
+            res = {}
         for i in list_of_ads:
-            i.inc_views(time=timezone.now(), user=ip)
-            i.save()
+            res['ad'] = i.title
+            res['time'] = str(timezone.now())
+            res['user_id'] = ip
+            data = json.dumps(res)
+            serial = ViewSerializer(data=data)
         return super().list(request,*args,**kwargs)
 
 class ShowAdPage(TemplateView):
@@ -52,6 +60,16 @@ class ShowAdPage(TemplateView):
             i.inc_views(time=timezone.now(), user=ip)
             i.save()
         return context
+class GuideAfterClickAPI(ListCreateAPIView):
+    queryset = Ad.objects.all()
+    serializer_class = AdSerializer
+    def get_object(self):
+        id = self.request['ad_id']
+        return Ad.objects.filter(id = id)
+
+    def list(self, request, *args, **kwargs):
+        return self.get_object().link
+
 
 class GuideAfterClick(RedirectView):
     permanent = False
@@ -68,6 +86,11 @@ class GuideAfterClick(RedirectView):
         ad.save()
         return ad.get_link()
 
+class GetPostedDetails(APIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'Advertiser_management/makingAd.html'
+    #def get(self):
+    #def post(self):
 
 class MAkingAdPage(FormView):
     template_name = 'Advertiser_management/makingAd.html'
