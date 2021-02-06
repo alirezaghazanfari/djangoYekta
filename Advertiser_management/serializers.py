@@ -6,7 +6,7 @@ import json
 class AdvertiserSerializer(serializers.ModelSerializer):
     ads = serializers.SerializerMethodField()
     def get_ads(self,advertiser):
-        return (Ad.objects.filter(advertiser = advertiser).values('title'))
+        return (Ad.objects.filter(advertiser = advertiser).values('title', 'image', 'link', 'advertiser__name'))
     class Meta:
         model = Advertiser
         fields = ('name','ads')
